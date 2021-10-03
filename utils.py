@@ -3,8 +3,12 @@ import pandas as pd
 def pretty_print(input_file, output_file):
     '''
     Convert a CSV file of coordination phrases into a pretty-printed RTF file.
-    input_file: path to the input CSV file.
-    output_file: path to the output RTF file.
+
+    Keyword Arguments:
+      input_file -- path to the input CSV file.
+      output_file -- path to the output RTF file.
+    Return:
+      None
     '''
 
     in_file = pd.read_csv(input_file, index_col=None, header=0)
