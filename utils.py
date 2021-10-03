@@ -1,5 +1,17 @@
 import pandas as pd
 
+# Conjunctions under analysis
+CONJUNCTIONS = ['and', 'or', 'but', 'nor']
+
+# Categories under analysis
+NOUN_CATEGORIES = ['NN', 'NNS', 'NNP', 'NNPS', 'NP', 'NX']
+VERB_CATEGORIES = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'VP']
+ADJ_CATEGORIES = ['JJ', 'JJR', 'JJS', 'ADJP']
+ADV_CATEGORIES = ['RB', 'RBR', 'RBS', 'ADVP']
+
+PHRASAL_CATEGORIES = ['NP', 'VP', 'ADJP', 'ADVP']
+
+
 def pretty_print(input_file, output_file):
     '''
     Convert a CSV file of coordination phrases into a pretty-printed RTF file.
@@ -12,7 +24,7 @@ def pretty_print(input_file, output_file):
     '''
 
     in_file = pd.read_csv(input_file, index_col=None, header=0)
-    out_file = open(output_file,'w')
+    out_file = open(output_file, 'w')
     out_file.write("{\\rtf1\n")
 
     section = ''
@@ -45,3 +57,69 @@ def pretty_print(input_file, output_file):
     out_file.write("}")
     out_file.close()
 
+
+def likes_df(df):
+    '''
+    Returns a DataFrame of the like coordinations contained in the
+    given DataFrame.
+
+    Keyword Arguments:
+        df -- DataFrame containing coordinations
+    Return:
+        Dataframe of like coordinations
+    '''
+
+    nouns = df[(df['1st Conjunct Category'].isin(NOUN_CATEGORIES)) & (
+        df['2nd Conjunct Category'].isin(NOUN_CATEGORIES))]
+
+    verbs = df[(df['1st Conjunct Category'].isin(VERB_CATEGORIES)) & (
+        df['2nd Conjunct Category'].isin(VERB_CATEGORIES))]
+
+    adjps = df[(df['1st Conjunct Category'].isin(ADJ_CATEGORIES)) & (
+        df['2nd Conjunct Category'].isin(ADJ_CATEGORIES))]
+
+    advps = df[(df['1st Conjunct Category'].isin(ADV_CATEGORIES)) & (
+        df['2nd Conjunct Category'].isin(ADV_CATEGORIES))]
+
+    likes = pd.concat([nouns, verbs, adjps, advps],
+                      axis=0, ignore_index=True)
+
+    return likes
+
+
+def unlikes_df(df):
+    '''
+    Returns a DataFrame of the unlike coordinations contained in the
+    given DataFrame.
+
+    Keyword Arguments:
+        df -- DataFrame containing coordinations
+    Return:
+        Dataframe of unlike coordinations
+    '''
+
+    df = df[df['1st Conjunct Category'].isin(PHRASAL_CATEGORIES)]
+    df = df[df['2nd Conjunct Category'].isin(PHRASAL_CATEGORIES)]
+
+    # Get unlike category combinations
+    unlikes = df.loc[df['1st Conjunct Category']
+                     != df['2nd Conjunct Category']]
+
+    return unlikes
+
+
+def filter_conjlength(df, length):
+    '''
+    Returns a DataFrame of coordinations contained in the given
+    DataFrame where each conjunct is at most the given length.
+
+    Keyword Arguments:
+        df -- DataFrame containing coordinations
+        length -- integer length to filter coordinations
+    Return:
+        Dataframe of filtered coordinations
+    '''
+    df['Sentence Text'] = df['Sentence Text'].astype('str')
+    mask1 = df['1st Conjunct Text'].str.split().str.len()
+    mask2 = df['2nd Conjunct Text'].str.split().str.len()
+    return df.loc[(mask1 <= length) & (mask2 <= length)]
