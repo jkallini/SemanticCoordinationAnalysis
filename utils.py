@@ -1,4 +1,5 @@
 import pandas as pd
+from multipledispatch import dispatch
 
 # Conjunctions under analysis
 CONJUNCTIONS = ['and', 'or', 'but', 'nor']
@@ -12,6 +13,7 @@ ADV_CATEGORIES = ['RB', 'RBR', 'RBS', 'ADVP']
 PHRASAL_CATEGORIES = ['NP', 'VP', 'ADJP', 'ADVP']
 
 
+@dispatch(str, str)
 def pretty_print(input_file, output_file):
     '''
     Convert a CSV file of coordination phrases into a pretty-printed RTF file.
@@ -23,12 +25,27 @@ def pretty_print(input_file, output_file):
       None
     '''
 
-    in_file = pd.read_csv(input_file, index_col=None, header=0)
+    input_df = pd.read_csv(input_file, index_col=None, header=0)
+    pretty_print(input_df, output_file)
+
+
+@dispatch(pd.DataFrame, str)
+def pretty_print(input_df, output_file):
+    '''
+    Convert a DataFrame of coordination phrases into a pretty-printed RTF file.
+
+    Keyword Arguments:
+      input_df -- input DataFrame of coordination phrases
+      output_file -- path to the output RTF file
+    Return:
+      None
+    '''
+
     out_file = open(output_file, 'w')
     out_file.write("{\\rtf1\n")
 
     section = ''
-    for index, row in in_file.iterrows():
+    for index, row in input_df.iterrows():
         sent = str(row['Sentence Text'])
         conj1 = str(row['1st Conjunct Text'])
         cat1 = str(row['1st Conjunct Category'])
