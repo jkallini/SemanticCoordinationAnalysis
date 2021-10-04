@@ -3,6 +3,7 @@
 
 import pandas as pd
 from multipledispatch import dispatch
+import spacy
 
 # Conjunctions under analysis
 CONJUNCTIONS = ['and', 'or', 'but', 'nor']
@@ -143,3 +144,37 @@ def filter_conjlength(df, length):
     mask1 = df['1st Conjunct Text'].str.split().str.len()
     mask2 = df['2nd Conjunct Text'].str.split().str.len()
     return df.loc[(mask1 <= length) & (mask2 <= length)]
+
+
+def get_head(phrase, nlp):
+    '''
+    Returns the syntactic head of the phrase using spaCy's dependency
+    parser, if it exists. Returns None otherwise.
+
+    Keyword Arguments:
+        phrase -- string phrase to parse
+        nlp -- spaCy language model
+    Return:
+        Dataframe of filtered coordinations
+    '''
+    doc = nlp(phrase)
+    sents = list(doc.sents)
+    if sents != []:
+        return str(list(doc.sents)[0].root)
+
+
+def add_conj_heads(df):
+    '''
+    Adds two new columns to the given DataFrame containing the syntactic
+    heads of each conjunct.
+
+    Keyword Arguments:
+        df -- DataFrame containing coordinations
+    Return:
+        Dataframe of coordinations with conjunct heads
+    '''
+    nlp = spacy.load("en_core_web_lg")
+    df['1st Conjunct Head'] = df.apply(
+        lambda row: get_head(str(row['1st Conjunct Text']), nlp), axis=1)
+    df['2nd Conjunct Head'] = df.apply(
+        lambda row: get_head(str(row['2nd Conjunct Text']), nlp), axis=1)
