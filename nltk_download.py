@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # nltk_download.py
+# Author: Julie Kallini
 
 # BEFORE running this script, and ensure that you have downloaded
 # the requirements in requirements.txt.

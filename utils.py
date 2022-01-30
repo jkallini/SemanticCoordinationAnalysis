@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # utils.py
+# Author: Julie Kallini
 
 import pandas as pd
 from multipledispatch import dispatch
@@ -23,11 +24,8 @@ def pretty_print(input_file, output_file):
     '''
     Convert a CSV file of coordination phrases into a pretty-printed RTF file.
 
-    Keyword Arguments:
-      input_file -- path to the input CSV file.
-      output_file -- path to the output RTF file.
-    Return:
-      None
+    @param input_file (str): path to the input CSV file.
+    @param output_file (str): path to the output RTF file.
     '''
 
     input_df = pd.read_csv(input_file, index_col=None, header=0)
@@ -39,11 +37,8 @@ def pretty_print(input_df, output_file):
     '''
     Convert a DataFrame of coordination phrases into a pretty-printed RTF file.
 
-    Keyword Arguments:
-      input_df -- input DataFrame of coordination phrases
-      output_file -- path to the output RTF file
-    Return:
-      None
+    @param input_df (DataFrame): input coordination phrases
+    @param output_file (str): path to the output RTF file
     '''
 
     out_file = open(output_file, 'w')
@@ -86,10 +81,8 @@ def likes_by_category(df):
     like coordinations for each of the four open-class syntactic categories:
     nouns, verbs, adjectives, and adverbs.
 
-    Keyword Arguments:
-        df -- DataFrame containing coordinations
-    Return:
-        List of DataFrames of length 4 [nouns, verbs, adjps, advps]
+    @param df (DataFrame): coordination phrases
+    @return (4-tuple of DataFrames): (nouns, verbs, adjps, advps)
     '''
 
     nouns = df[(df['1st Conjunct Category'].isin(NOUN_CATEGORIES)) & (
@@ -104,20 +97,21 @@ def likes_by_category(df):
     advps = df[(df['1st Conjunct Category'].isin(ADV_CATEGORIES)) & (
         df['2nd Conjunct Category'].isin(ADV_CATEGORIES))]
 
-    return [nouns, verbs, adjps, advps]
+    return (nouns, verbs, adjps, advps)
 
 
 def likes_df(df):
     '''
     Returns a DataFrame of the like coordinations contained in the
-    given DataFrame.
+    given DataFrame. Like coordinations must have conjuncts that are
+    members of one of the four open-class syntactic categories:
+    nouns, verbs, adjectives, and adverbs.
 
-    Keyword Arguments:
-        df -- DataFrame containing coordinations
-    Return:
-        Dataframe of like coordinations
+    @param df (DataFrame): coordination phrases
+    @return (DataFrame): like coordination phrases
     '''
-    likes = pd.concat(likes_by_category(df),
+
+    likes = pd.concat(list(likes_by_category(df)),
                       axis=0, ignore_index=True)
 
     return likes
@@ -128,12 +122,10 @@ def unlikes_df(df):
     Returns a DataFrame of the unlike coordinations contained in the
     given DataFrame.
 
-    Keyword Arguments:
-        df -- DataFrame containing coordinations
-    Return:
-        Dataframe of unlike coordinations
+    @param df (DataFrame): coordination phrases
+    @return (DataFrame): unlike coordination phrases
     '''
-
+    
     df = df[df['1st Conjunct Category'].isin(PHRASAL_CATEGORIES)]
     df = df[df['2nd Conjunct Category'].isin(PHRASAL_CATEGORIES)]
 
@@ -144,17 +136,18 @@ def unlikes_df(df):
     return unlikes
 
 
-def filter_conjlength(df, length):
+def filter_conj_length(df, length):
     '''
     Returns a DataFrame of coordinations contained in the given
     DataFrame where each conjunct is at most the given length.
 
-    Keyword Arguments:
-        df -- DataFrame containing coordinations
-        length -- integer length to filter coordinations
-    Return:
-        Dataframe of filtered coordinations
+    @param df (DataFrame): coordination phrases
+    @param length (int): length threshold for filtering coordinations
+    @return (DataFrame): filtered coordination phrases
     '''
+    
+    df = df.copy()
+
     df['Sentence Text'] = df['Sentence Text'].astype('str')
     mask1 = df['1st Conjunct Text'].str.split().str.len()
     mask2 = df['2nd Conjunct Text'].str.split().str.len()
@@ -166,12 +159,11 @@ def get_head(phrase, nlp):
     Returns the syntactic head of the phrase using spaCy's dependency
     parser, if it exists. Returns None otherwise.
 
-    Keyword Arguments:
-        phrase -- string phrase to parse
-        nlp -- spaCy language model
-    Return:
-        Dataframe of filtered coordinations
+    @param phrase (str): phrase to parse
+    @param nlp (Doc): spaCy language model
+    @return (str): head word of phrase
     '''
+
     doc = nlp(phrase)
     sents = list(doc.sents)
     if sents != []:
@@ -183,16 +175,19 @@ def add_conj_heads(df):
     Adds two new columns to the given DataFrame containing the syntactic
     heads of each conjunct.
 
-    Keyword Arguments:
-        df -- DataFrame containing coordinations
-    Return:
-        Dataframe of coordinations with conjunct heads
+    @param df (DataFrame): coordination phrases
+    @return (DataFrame): coordination phrases containing conjunct heads
     '''
+
+    df = df.copy()
+
     nlp = spacy.load("en_core_web_lg")
     df['1st Conjunct Head'] = df.apply(
         lambda row: get_head(str(row['1st Conjunct Text']), nlp), axis=1)
     df['2nd Conjunct Head'] = df.apply(
         lambda row: get_head(str(row['2nd Conjunct Text']), nlp), axis=1)
+    
+    return df
 
 
 def analyze_synonymy(df):
@@ -200,11 +195,11 @@ def analyze_synonymy(df):
     Run synonymy analysis on all categories in the given DataFrame.
     Returns DataFrame with new boolean 'Synonyms?' column.
 
-    Keyword Arguments:
-        df -- DataFrame of coordinations
-    Return:
-        Dataframe of coordinations with synonymy relation indicated
+    @param df (DataFrame): coordination phrases
+    @return (DataFrame): coordinations with synonymy relation column
     """
+
+    df = df.copy()
 
     # Ensure Dataframe only contains conjuncts of like categories
     df = likes_df(df)
@@ -223,11 +218,11 @@ def analyze_antonymy(df):
     in the given DataFrame. Returns DataFrame with a new 'Antonyms?'
     column.
 
-    Keyword Arguments:
-        df -- DataFrame of coordinations
-    Return:
-        Dataframe of coordinations with antonymy relation indicated
+    @param df (DataFrame): coordination phrases
+    @return (DataFrame): coordinations with antonymy relation column
     """
+
+    df = df.copy()
 
     # Ensure DataFrame only contains adjective/adverb categories
     df = df[(df['1st Conjunct Category'].isin(ADJ_CATEGORIES) & df['2nd Conjunct Category'].isin(ADJ_CATEGORIES)) |
@@ -247,11 +242,11 @@ def analyze_hypernymy(df):
     DataFrame. Returns DataFrame with new columns '1st Conjunct Hypernym?'
     and '2nd Conjunct Hypernym?'.
 
-    Keyword Arguments:
-        df -- DataFrame of coordinations
-    Return:
-        Dataframe of coordinations with hypernymy relations indicated
+    @param df (DataFrame): coordination phrases
+    @return (Dataframe): coordinations with hypernymy relation columns
     """
+
+    df = df.copy()
 
     # Ensure DataFrame only contains nominal/verbal categories
     df = df[(df['1st Conjunct Category'].isin(NOUN_CATEGORIES) & df['2nd Conjunct Category'].isin(NOUN_CATEGORIES)) |
@@ -274,16 +269,15 @@ def analyze_cohyponymy(df):
     Run co-hyponymy analysis on noun-like and verb-like categories in the given
     DataFrame. Returns DataFrame with new column 'Co-hyponyms?'.
 
-    Keyword Arguments:
-        df -- DataFrame of coordinations
-    Return:
-        Dataframe of coordinations with co-hyponymy indicated
+    @param df (DataFrame): coordination phrases
+    @return (Dataframe): coordinations with co-hyponymy relation column
     """
+
+    df = df.copy()
 
     # Ensure DataFrame only contains nominal/verbal categories
     df = df[(df['1st Conjunct Category'].isin(NOUN_CATEGORIES) & df['2nd Conjunct Category'].isin(NOUN_CATEGORIES)) |
             (df['1st Conjunct Category'].isin(VERB_CATEGORIES) & df['2nd Conjunct Category'].isin(VERB_CATEGORIES))]
-
 
     df['Co-hyponyms?'] = df.apply(lambda row: wr.co_hyponyms(
         str(row['2nd Conjunct Head']),
@@ -298,13 +292,13 @@ def analyze_entailment(df):
     Run entailment analysis on verb-like categories in the given DataFrame.
     Returns DataFrame with new columns '1st Conjunct Entails 2nd?' and
     '2nd Conjunct Entails 1st?'.
-    
-    Keyword Arguments:
-        df -- DataFrame of coordinations
-    Return:
-        Dataframe of coordinations with entailments indicated
 
+    @param df (DataFrame): coordination phrases
+    @return (Dataframe): coordinations with entailment relation columns
     """
+
+    df = df.copy()
+
     # Ensure conjuncts have verbal categories
     df = df[df['1st Conjunct Category'].isin(VERB_CATEGORIES)]
     df = df[df['2nd Conjunct Category'].isin(VERB_CATEGORIES)]
@@ -319,3 +313,25 @@ def analyze_entailment(df):
         str(row['1st Conjunct Category'])), axis=1)
 
     return df
+
+
+def _make_gen(reader):
+    '''
+    Helper generator function for rawgencount.
+    '''
+    b = reader(1024 * 1024)
+    while b:
+        yield b
+        b = reader(1024*1024)
+
+
+def rawgencount(filename):
+    """
+    Programmatically counts the number of lines in a file.
+
+    @param filename (str): path to file
+    @return (int): number of lines in file
+    """
+    f = open(filename, 'rb')
+    f_gen = _make_gen(f.raw.read)
+    return sum(buf.count(b'\n') for buf in f_gen)
