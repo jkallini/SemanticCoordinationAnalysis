@@ -209,7 +209,7 @@ def analyze_synonymy(df):
         str(row['2nd Conjunct Head']),
         str(row['1st Conjunct Category'])), axis=1)
 
-    return df
+    return df[df['Synonyms?'].notnull()]
 
 
 def analyze_antonymy(df):
@@ -233,7 +233,7 @@ def analyze_antonymy(df):
         str(row['2nd Conjunct Head']),
         str(row['1st Conjunct Category'])), axis=1)
 
-    return df
+    return df[df['Antonyms?'].notnull()]
 
 
 def analyze_hypernymy(df):
@@ -261,6 +261,9 @@ def analyze_hypernymy(df):
         str(row['1st Conjunct Head']),
         str(row['1st Conjunct Category'])), axis=1)
 
+    df = df[df['1st Conjunct Hypernym?'].notnull()]
+    df = df[df['2nd Conjunct Hypernym?'].notnull()]
+
     return df
 
 
@@ -284,7 +287,7 @@ def analyze_cohyponymy(df):
         str(row['1st Conjunct Head']),
         str(row['1st Conjunct Category'])), axis=1)
 
-    return df
+    return df[df['Co-hyponyms?'].notnull()]
 
 
 def analyze_entailment(df):
@@ -311,6 +314,9 @@ def analyze_entailment(df):
         str(row['2nd Conjunct Head']),
         str(row['1st Conjunct Head']),
         str(row['1st Conjunct Category'])), axis=1)
+
+    df = df[df['1st Conjunct Entails 2nd?'].notnull()]
+    df = df[df['2nd Conjunct Entails 1st?'].notnull()]
 
     return df
 

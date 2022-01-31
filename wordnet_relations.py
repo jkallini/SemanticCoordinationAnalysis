@@ -32,6 +32,19 @@ def get_wordnet_tag(nltk_tag):
         return wn.NOUN
 
 
+def get_synsets(word1, word2, tag):
+    """
+    Returns synsets of word1 and the synsets of word2.
+
+    @param word1 (str): English word
+    @param word2 (str): English word
+    @param tag (str): NLTK tag of word1 and word2
+    @return (tuple): 2-tuple of lists of synsets for word1 and word2
+    """
+    pos = get_wordnet_tag(tag)
+    return wn.synsets(word1, pos=pos), wn.synsets(word2, pos=pos)
+
+
 def synonyms(word1, word2, tag):
     """
     Returns whether word1 and word2 are synonyms by testing all possible
@@ -40,10 +53,14 @@ def synonyms(word1, word2, tag):
     @param word1 (str): English word
     @param word2 (str): English word
     @param tag (str): NLTK tag of word1 and word2
-    @return (bool): true if word1 and word2 are synonyms, false otherwise
+    @return (nullable bool):
+        - True if word1 and word2 are synonyms, False otherwise
+        - None if word1 or word2 is not in WordNet
     """
-    pos = get_wordnet_tag(tag)
-    return not set(wn.synsets(word1, pos=pos)).isdisjoint(set(wn.synsets(word2, pos=pos)))
+    syns1, syns2 = get_synsets(word1, word2, tag)
+    if len(syns1) == 0 or len(syns2) == 0:
+        return None
+    return not set(syns1).isdisjoint(set(syns2))
 
 
 def antonyms(word1, word2, tag):
@@ -54,13 +71,17 @@ def antonyms(word1, word2, tag):
     @param word1 (str): English word
     @param word2 (str): English word
     @param tag (str): NLTK tag of word1 and word2
-    @return (bool): true if word1 and word2 are antonyms, false otherwise
+    @return (nullable bool):
+        - True if word1 and word2 are antonyms, False otherwise
+        - None if word1 or word2 is not in WordNet
     """
-    pos = get_wordnet_tag(tag)
+    syns1, syns2 = get_synsets(word1, word2, tag)
+    if len(syns1) == 0 or len(syns2) == 0:
+        return None
 
     # Test relation among all pairs of synsets
-    synsets1 = set([l for s in wn.synsets(word1, pos=pos) for l in s.lemmas()])
-    for ss in wn.synsets(word2, pos=pos):
+    synsets1 = set([l for s in syns1 for l in s.lemmas()])
+    for ss in syns2:
         for l in ss.lemmas():
             antonyms = l.antonyms()
             if not synsets1.isdisjoint(antonyms):
@@ -78,13 +99,17 @@ def relates(word1, word2, rel, tag):
     @param word2 (str): English word
     @param rel (function): relation function
     @param tag (str): NLTK tag of word1 and word2
-    @return (bool): true if relation function holds, false otherwise
+    @return (nullable bool):
+        - True if relation function holds, False otherwise
+        - None if word1 or word2 is not in WordNet
     """
-    pos = get_wordnet_tag(tag)
+    syns1, syns2 = get_synsets(word1, word2, tag)
+    if len(syns1) == 0 or len(syns2) == 0:
+        return None
 
     # Test relation among all pairs of synsets
-    synsets1 = set(wn.synsets(word1, pos=pos))
-    for ss in wn.synsets(word2, pos=pos):
+    synsets1 = set(syns1)
+    for ss in syns2:
         relations = set([i for i in ss.closure(rel)])
         if not synsets1.isdisjoint(relations):
             return True
@@ -100,7 +125,9 @@ def is_hypernym(word1, word2, tag):
     @param word1 (str): English word
     @param word2 (str): English word
     @param tag (str): NLTK tag of word1 and word2
-    @return (bool): true if word1 is a hypernym of word2, false otherwise
+    @return (nullable bool):
+        - True if word1 is a hypernym of word2, False otherwise
+        - None if word1 or word2 is not in WordNet
     """
     return relates(word1, word2, lambda s: s.hypernyms(), tag)
 
@@ -127,15 +154,19 @@ def co_hyponyms(word1, word2, tag):
     @param word1 (str): English word
     @param word2 (str): English word
     @param tag (str): NLTK tag of word1 and word2
-    @return (bool): true if word1 and word2 are co-hyponyms, false otherwise
+    @return (nullable bool):
+        - True if word1 and word2 are co-hyponyms, False otherwise
+        - None if word1 or word2 is not in WordNet
     """
-    pos = get_wordnet_tag(tag)
+    syns1, syns2 = get_synsets(word1, word2, tag)
+    if len(syns1) == 0 or len(syns2) == 0:
+        return None
 
     # Test relation among all pairs of synsets
-    synsets = set(wn.synsets(word1, pos=pos))
-    for ss in wn.synsets(word2, pos=pos):
+    synsets1 = set(syns1)
+    for ss in syns2:
         co_hyponyms = get_co_hyponyms(ss)
-        if not synsets.isdisjoint(co_hyponyms):
+        if not synsets1.isdisjoint(co_hyponyms):
             return True
 
     return False
@@ -149,6 +180,8 @@ def entails(word1, word2, tag):
     @param word1 (str): English word
     @param word2 (str): English word
     @param tag (str): NLTK tag of word1 and word2
-    @return (bool): true if word1 entails word2, false otherwise
+    @return (nullable bool):
+        - True if word1 entails word2, False otherwise
+        - None if word1 or word2 is not in WordNet
     """
     return relates(word2, word1, lambda s: s.entailments(), tag)
