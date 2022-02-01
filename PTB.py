@@ -3,11 +3,10 @@
 # Author: Julie Kallini
 
 import pandas as pd
-import os
 import re
 from nltk import ParentedTree
 from tqdm import tqdm
-from utils import rawgencount
+import argparse
 
 
 def get_tree_text(tree):
@@ -61,17 +60,37 @@ def get_coordphrases(tree):
     return phrases
 
 
+def get_args():
+    '''
+    Parse command-line arguments.
+    '''
+    parser = argparse.ArgumentParser(
+        description='Extract coordinations from PTB style input files.')
+    parser.add_argument('input_files', nargs='+', type=str,
+                        help='path to input PTB file(s)')
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
     '''
     Main function.
     '''
-    print("Beginning parse of PTB.ext...")
+    args = get_args()
 
-    data = []
-    num_lines = rawgencount("PTB.ext")
+    i = 1
+    tot = str(len(args.input_files))
 
-    with open('PTB.ext', encoding='utf-8') as f:
-        for sent_tree in tqdm(f, total=num_lines):
+    for file in args.input_files:
+
+        print("(" + str(i) + "/" + tot + ")")
+        print("Parsing coordinations from {}...".format(file))
+
+        f = open(file, 'r', encoding='utf-8')
+        lines = f.readlines()
+
+        data = []
+
+        for sent_tree in tqdm(lines):
 
             # Parse this sent_tree into an NLTK tree object
             tree = ParentedTree.fromstring(sent_tree)
@@ -102,16 +121,17 @@ if __name__ == "__main__":
 
                 data.append(row)
 
-    columns = ['1st Conjunct Category', '1st Conjunct Text',
-               '2nd Conjunct Category', '2nd Conjunct Text',
-               'Phrase Category', 'Phrase Text',
-               'Conjunction', 'Sentence Text', 'Sentence Parse Tree']
+        columns = ['1st Conjunct Category', '1st Conjunct Text',
+                '2nd Conjunct Category', '2nd Conjunct Text',
+                'Phrase Category', 'Phrase Text',
+                'Conjunction', 'Sentence Text', 'Sentence Parse Tree']
 
-    df = pd.DataFrame(data, columns=columns)
+        df = pd.DataFrame(data, columns=columns)
 
-    if not os.path.exists('csv/PTB/'):
-        os.makedirs('csv/PTB/')
+        dest_name = file.split('.')[0]
 
-    df.to_csv('csv/PTB/PTB_ccps.csv', index=False)
+        df.to_csv(dest_name + '.csv', index=False)
 
-    print("All done! The result is stored in csv/PTB/PTB.csv.")
+        print("All done! The result is stored in {}.csv.".format(dest_name))
+        
+        i += 1

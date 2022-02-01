@@ -319,25 +319,3 @@ def analyze_entailment(df):
     df = df[df['2nd Conjunct Entails 1st?'].notnull()]
 
     return df
-
-
-def _make_gen(reader):
-    '''
-    Helper generator function for rawgencount.
-    '''
-    b = reader(1024 * 1024)
-    while b:
-        yield b
-        b = reader(1024*1024)
-
-
-def rawgencount(filename):
-    """
-    Programmatically counts the number of lines in a file.
-
-    @param filename (str): path to file
-    @return (int): number of lines in file
-    """
-    f = open(filename, 'rb')
-    f_gen = _make_gen(f.raw.read)
-    return sum(buf.count(b'\n') for buf in f_gen)
