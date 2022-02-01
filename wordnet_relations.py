@@ -57,9 +57,13 @@ def synonyms(word1, word2, tag):
         - True if word1 and word2 are synonyms, False otherwise
         - None if word1 or word2 is not in WordNet
     """
+    if word1.lower() == word2.lower():
+        return False
+
     syns1, syns2 = get_synsets(word1, word2, tag)
     if len(syns1) == 0 or len(syns2) == 0:
         return None
+
     return not set(syns1).isdisjoint(set(syns2))
 
 
@@ -158,6 +162,9 @@ def co_hyponyms(word1, word2, tag):
         - True if word1 and word2 are co-hyponyms, False otherwise
         - None if word1 or word2 is not in WordNet
     """
+    if word1.lower() == word2.lower():
+        return False
+
     syns1, syns2 = get_synsets(word1, word2, tag)
     if len(syns1) == 0 or len(syns2) == 0:
         return None

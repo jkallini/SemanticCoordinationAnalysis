@@ -4,6 +4,9 @@ csv/
 # RTF files
 rtf/
 
+# charts
+charts/
+
 # Jessica Ficler's PTB coordination extension
 PTB.ext
 
