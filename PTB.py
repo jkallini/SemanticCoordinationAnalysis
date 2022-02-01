@@ -3,6 +3,7 @@
 # Author: Julie Kallini
 
 import pandas as pd
+import os
 import re
 from nltk import ParentedTree
 from tqdm import tqdm
@@ -29,6 +30,66 @@ def get_tree_text(tree):
 def get_coordphrases(tree):
     '''
     Function: Find all coordination phrases of the given NLTK tree.
+
+    @param tree (Tree): NLTK tree object
+    @return (list of tuples): phrase
+        a phrase is a 4 tuple containing a list of conjuncts, a conjunction
+        (string), a phrase category (string), and a phrase text (string)
+        a conjunct is a tuple containing its category (string) and text (string)
+    '''
+
+    phrases = []
+
+    for s in tree.subtrees(
+            lambda t: t.label() == "CC" and
+            (len(list(t.parent())) == 3 or len(list(t.parent())) == 4)):
+
+        parent = s.parent()
+        phrase_cat = parent.label()
+        phrase_text = get_tree_text(parent)
+
+        # Simple three-prong coordination phrases
+        if len(list(parent)) == 3:
+            # Get left ad right siblings
+            left = s.left_sibling()
+            right = s.right_sibling()
+
+            if left is None or right is None:
+                continue
+
+            conjunct1 = (left.label(), get_tree_text(left))
+            conjunct2 = (right.label(), get_tree_text(right))
+            conjunction = get_tree_text(s)
+            phrases.append(
+                ([conjunct1, conjunct2], conjunction, phrase_cat, phrase_text))
+
+        # "neither-nor" coordination phrases
+        elif get_tree_text(parent[0]) == 'neither' and get_tree_text(parent[2]) == 'nor':
+            left = parent[1]
+            right = parent[3]
+            conjunct1 = (left.label(), get_tree_text(left))
+            conjunct2 = (right.label(), get_tree_text(right))
+            conjunction = 'nor'
+            phrases.append(
+                ([conjunct1, conjunct2], conjunction, phrase_cat, phrase_text))
+
+        # VPs with both conjuncts as complements
+        elif parent.label() == 'VP' and parent[2].label() == 'CC':
+            left = parent[1]
+            right = parent[3]
+            conjunct1 = (left.label(), get_tree_text(left))
+            conjunct2 = (right.label(), get_tree_text(right))
+            conjunction = get_tree_text(parent[2])
+            phrases.append(
+                ([conjunct1, conjunct2], conjunction, phrase_cat, phrase_text))
+
+    return phrases
+
+
+def get_coordphrases_ptbext(tree):
+    '''
+    Function: Find all coordination phrases of the given NLTK tree,
+    assuming the format is from the PTB extension.
 
     @param tree (Tree): NLTK tree object
     @return (list of tuples): phrase
@@ -66,6 +127,8 @@ def get_args():
     '''
     parser = argparse.ArgumentParser(
         description='Extract coordinations from PTB style input files.')
+    parser.add_argument('--gum', dest='gum', action='store_true',
+                        help='Indicates that the input files are in GUM format')
     parser.add_argument('input_files', nargs='+', type=str,
                         help='path to input PTB file(s)')
     return parser.parse_args()
@@ -96,7 +159,12 @@ if __name__ == "__main__":
             tree = ParentedTree.fromstring(sent_tree)
 
             # Get all phrases in this tree
-            for phrase in get_coordphrases(tree):
+            if args.gum:
+                coordphrases = get_coordphrases(tree)
+            else:
+                coordphrases = get_coordphrases_ptbext(tree)
+
+            for phrase in coordphrases:
 
                 conjuncts = phrase[0]
                 conjunction = phrase[1]
@@ -122,9 +190,9 @@ if __name__ == "__main__":
                 data.append(row)
 
         columns = ['1st Conjunct Category', '1st Conjunct Text',
-                '2nd Conjunct Category', '2nd Conjunct Text',
-                'Phrase Category', 'Phrase Text',
-                'Conjunction', 'Sentence Text', 'Sentence Parse Tree']
+                   '2nd Conjunct Category', '2nd Conjunct Text',
+                   'Phrase Category', 'Phrase Text',
+                   'Conjunction', 'Sentence Text', 'Sentence Parse Tree']
 
         df = pd.DataFrame(data, columns=columns)
 
@@ -133,5 +201,5 @@ if __name__ == "__main__":
         df.to_csv(dest_name + '.csv', index=False)
 
         print("All done! The result is stored in {}.csv.".format(dest_name))
-        
+
         i += 1
