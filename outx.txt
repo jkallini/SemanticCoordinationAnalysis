@@ -1,0 +1,173 @@
+bias
+bias
+bias
+bias
+Personal experiences of discrimination and bias have been the focus of much social science research. [1 - 3]
+[('and', [('discrimination', 'NOUN'), ('bias', 'NOUN')]), ('or', [('discrimination', 'NOUN'), ('bias', 'NOUN')]), ('but', [('discrimination', 'NOUN'), ('bias', 'NOUN')]), ('nor', [('discrimination', 'NOUN'), ('bias', 'NOUN')])]
+unconscious
+unconscious
+unconscious
+unconscious
+psychologists have examined the mental processes that underpin conscious and unconscious biases [6];
+[('and', [('conscious', 'ADJ'), ('unconscious', 'ADJ')]), ('or', [('conscious', 'ADJ'), ('unconscious', 'ADJ')]), ('but', [('conscious', 'ADJ'), ('unconscious', 'ADJ')]), ('nor', [('conscious', 'ADJ'), ('unconscious', 'ADJ')])]
+group
+group
+group
+group
+and evolutionary theorists have explored the various ways that in-group / out-group biases emerged across the history of our species. [10]
+[('and', [('group', 'NOUN'), ('group', 'NOUN')]), ('or', [('group', 'NOUN'), ('group', 'NOUN')]), ('but', [('group', 'NOUN'), ('group', 'NOUN')]), ('nor', [('group', 'NOUN'), ('group', 'NOUN')])]
+consequence
+bias
+consequence
+bias
+consequence
+bias
+consequence
+bias
+In many respects, researchers already possess a wealth of knowledge concerning the origins and consequences of discrimination and bias. [11]
+[('and', [('origin', 'NOUN'), ('consequence', 'NOUN')]), ('and', [('discrimination', 'NOUN'), ('bias', 'NOUN')]), ('or', [('origin', 'NOUN'), ('consequence', 'NOUN')]), ('or', [('discrimination', 'NOUN'), ('bias', 'NOUN')]), ('but', [('origin', 'NOUN'), ('consequence', 'NOUN')]), ('but', [('discrimination', 'NOUN'), ('bias', 'NOUN')]), ('nor', [('origin', 'NOUN'), ('consequence', 'NOUN')]), ('nor', [('discrimination', 'NOUN'), ('bias', 'NOUN')])]
+bias
+bias
+bias
+bias
+Indeed, the implementation of certain policies is rooted in the assumption that discrimination and biases are, at least to some appreciable amount, present in modern society.
+[('and', [('discrimination', 'NOUN'), ('bias', 'NOUN')]), ('or', [('discrimination', 'NOUN'), ('bias', 'NOUN')]), ('but', [('discrimination', 'NOUN'), ('bias', 'NOUN')]), ('nor', [('discrimination', 'NOUN'), ('bias', 'NOUN')])]
+colleague
+al.
+colleague
+al.
+colleague
+al.
+colleague
+al.
+At least one prior study by Kessler and colleagues [15], however, using measures of perceived discrimination in a large American sample, reported that approximately 33% of respondents reported some form of discrimination (see also, Gibbons et al. [4]).
+[('and', [('Kessler', 'PROPN'), ('colleague', 'NOUN')]), ('and', [('Gibbons', 'PROPN'), ('al.', 'X')]), ('or', [('Kessler', 'PROPN'), ('colleague', 'NOUN')]), ('or', [('Gibbons', 'PROPN'), ('al.', 'X')]), ('but', [('Kessler', 'PROPN'), ('colleague', 'NOUN')]), ('but', [('Gibbons', 'PROPN'), ('al.', 'X')]), ('nor', [('Kessler', 'PROPN'), ('colleague', 'NOUN')]), ('nor', [('Gibbons', 'PROPN'), ('al.', 'X')])]
+often
+often
+often
+often
+All respondents who indicated they were discriminated against — specifically, those who responded with sometimes or often to the perceived discrimination measure described above — were asked the following question:
+[('and', [('sometimes', 'ADV'), ('often', 'ADV')]), ('or', [('sometimes', 'ADV'), ('often', 'ADV')]), ('but', [('sometimes', 'ADV'), ('often', 'ADV')]), ('nor', [('sometimes', 'ADV'), ('often', 'ADV')])]
+ancestry
+color
+ancestry
+color
+ancestry
+color
+ancestry
+color
+race / ancestry / skin color;
+[('and', [('race', 'NOUN'), ('ancestry', 'NOUN'), ('color', 'NOUN')]), ('or', [('race', 'NOUN'), ('ancestry', 'NOUN'), ('color', 'NOUN')]), ('but', [('race', 'NOUN'), ('ancestry', 'NOUN'), ('color', 'NOUN')]), ('nor', [('race', 'NOUN'), ('ancestry', 'NOUN'), ('color', 'NOUN')])]
+weight
+weight
+weight
+weight
+height or weight;
+[('and', [('height', 'NOUN'), ('weight', 'NOUN')]), ('or', [('height', 'NOUN'), ('weight', 'NOUN')]), ('but', [('height', 'NOUN'), ('weight', 'NOUN')]), ('nor', [('height', 'NOUN'), ('weight', 'NOUN')])]
+income
+income
+income
+income
+education or income;
+[('and', [('education', 'NOUN'), ('income', 'NOUN')]), ('or', [('education', 'NOUN'), ('income', 'NOUN')]), ('but', [('education', 'NOUN'), ('income', 'NOUN')]), ('nor', [('education', 'NOUN'), ('income', 'NOUN')])]
+ancestry
+origin
+shade
+ancestry
+origin
+shade
+ancestry
+origin
+shade
+ancestry
+origin
+shade
+The following categories from the original questionnaire were collapsed into one category for the analysis: race; ancestry or national origin; and shade of skin color.
+[('and', [('race', 'NOUN'), ('ancestry', 'NOUN'), ('shade', 'NOUN')]), ('and', [('ancestry', 'NOUN'), ('origin', 'NOUN')]), ('or', [('race', 'NOUN'), ('ancestry', 'NOUN'), ('shade', 'NOUN')]), ('or', [('ancestry', 'NOUN'), ('origin', 'NOUN')]), ('but', [('race', 'NOUN'), ('ancestry', 'NOUN'), ('shade', 'NOUN')]), ('but', [('ancestry', 'NOUN'), ('origin', 'NOUN')]), ('nor', [('race', 'NOUN'), ('ancestry', 'NOUN'), ('shade', 'NOUN')]), ('nor', [('ancestry', 'NOUN'), ('origin', 'NOUN')])]
+race
+race
+race
+race
+Wave 1 race — rather than, say, Wave 3 race — was used to preserve case counts.
+[('and', [('race', 'NOUN'), ('race', 'NOUN')]), ('or', [('race', 'NOUN'), ('race', 'NOUN')]), ('but', [('race', 'NOUN'), ('race', 'NOUN')]), ('nor', [('race', 'NOUN'), ('race', 'NOUN')])]
+interview
+interview
+interview
+interview
+The logic is that (nearly) all Wave 4 respondents appeared in the Wave 1 sample, but not all would have been interviewed at Wave 3 due to differential patterns of temporary attrition.
+[('and', [('appear', 'VERB'), ('interview', 'VERB')]), ('or', [('appear', 'VERB'), ('interview', 'VERB')]), ('but', [('appear', 'VERB'), ('interview', 'VERB')]), ('nor', [('appear', 'VERB'), ('interview', 'VERB')])]
+Black
+American
+Hispanic
+Indian
+American
+Asian
+Islander
+Black
+American
+Hispanic
+Indian
+American
+Asian
+Islander
+Black
+American
+Hispanic
+Indian
+American
+Asian
+Islander
+Black
+American
+Hispanic
+Indian
+American
+Asian
+Islander
+Respondents were asked to indicate their race from among the following categories: White; Black or African American; Hispanic; American Indian or Native American; and Asian or Pacific Islander.
+[('and', [('White', 'PROPN'), ('Black', 'PROPN'), ('Hispanic', 'PROPN'), ('Indian', 'PROPN'), ('Asian', 'PROPN')]), ('and', [('Black', 'PROPN'), ('American', 'PROPN')]), ('and', [('Indian', 'PROPN'), ('American', 'PROPN')]), ('and', [('Asian', 'PROPN'), ('Islander', 'PROPN')]), ('or', [('White', 'PROPN'), ('Black', 'PROPN'), ('Hispanic', 'PROPN'), ('Indian', 'PROPN'), ('Asian', 'PROPN')]), ('or', [('Black', 'PROPN'), ('American', 'PROPN')]), ('or', [('Indian', 'PROPN'), ('American', 'PROPN')]), ('or', [('Asian', 'PROPN'), ('Islander', 'PROPN')]), ('but', [('White', 'PROPN'), ('Black', 'PROPN'), ('Hispanic', 'PROPN'), ('Indian', 'PROPN'), ('Asian', 'PROPN')]), ('but', [('Black', 'PROPN'), ('American', 'PROPN')]), ('but', [('Indian', 'PROPN'), ('American', 'PROPN')]), ('but', [('Asian', 'PROPN'), ('Islander', 'PROPN')]), ('nor', [('White', 'PROPN'), ('Black', 'PROPN'), ('Hispanic', 'PROPN'), ('Indian', 'PROPN'), ('Asian', 'PROPN')]), ('nor', [('Black', 'PROPN'), ('American', 'PROPN')]), ('nor', [('Indian', 'PROPN'), ('American', 'PROPN')]), ('nor', [('Asian', 'PROPN'), ('Islander', 'PROPN')])]
+ask
+ask
+ask
+ask
+Respondents were provided the opportunity to select more than one race, and those who did were asked a follow-up question regarding which category best described their racial background.
+[('and', [('provide', 'VERB'), ('ask', 'VERB')]), ('or', [('provide', 'VERB'), ('ask', 'VERB')]), ('but', [('provide', 'VERB'), ('ask', 'VERB')]), ('nor', [('provide', 'VERB'), ('ask', 'VERB')])]
+=
+=
+=
+=
+Second, sex was dichotomously coded based on the self-reported sex of the respondent at Wave 4 (0 = female and 1 = male).
+[('and', [('=', 'SYM'), ('=', 'SYM')]), ('or', [('=', 'SYM'), ('=', 'SYM')]), ('but', [('=', 'SYM'), ('=', 'SYM')]), ('nor', [('=', 'SYM'), ('=', 'SYM')])]
+category
+category
+category
+category
+First, summary statistics of the study variables and racial categories were produced.
+[('and', [('variable', 'NOUN'), ('category', 'NOUN')]), ('or', [('variable', 'NOUN'), ('category', 'NOUN')]), ('but', [('variable', 'NOUN'), ('category', 'NOUN')]), ('nor', [('variable', 'NOUN'), ('category', 'NOUN')])]
+Scott
+1984
+Scott
+1984
+Scott
+1984
+Scott
+1984
+More specifically, when analyzing weighted sample data employing the svy suite of commands in Stata the conventional Pearson χ2 statistic test of independence is converted into “an Fstatistic with noninteger degrees of freedom by using a second-order Rao and Scott (1981 [22], 1984 [23]) correction”. [24]
+[('and', [('Rao', 'PROPN'), ('Scott', 'PROPN')]), ('and', [('1981', 'NUM'), ('1984', 'NUM')]), ('or', [('Rao', 'PROPN'), ('Scott', 'PROPN')]), ('or', [('1981', 'NUM'), ('1984', 'NUM')]), ('but', [('Rao', 'PROPN'), ('Scott', 'PROPN')]), ('but', [('1981', 'NUM'), ('1984', 'NUM')]), ('nor', [('Rao', 'PROPN'), ('Scott', 'PROPN')]), ('nor', [('1981', 'NUM'), ('1984', 'NUM')])]
+calculation
+calculation
+calculation
+calculation
+The p-value associated with the design-based F is thus more accurate (than the associated with the χ2 statistic) given the adjustments and calculations take into account the weighted nature of the data.
+[('and', [('adjustment', 'NOUN'), ('calculation', 'NOUN')]), ('or', [('adjustment', 'NOUN'), ('calculation', 'NOUN')]), ('but', [('adjustment', 'NOUN'), ('calculation', 'NOUN')]), ('nor', [('adjustment', 'NOUN'), ('calculation', 'NOUN')])]
+correct
+stratification
+correct
+stratification
+correct
+stratification
+correct
+stratification
+As noted earlier, all analyses were weighted according to the survey weight provided by the Add Health research staff and standard errors were corrected for the clustering and stratification that defined the sampling strategy.
+[('and', [('weight', 'VERB'), ('correct', 'VERB')]), ('and', [('clustering', 'NOUN'), ('stratification', 'NOUN')]), ('or', [('weight', 'VERB'), ('correct', 'VERB')]), ('or', [('clustering', 'NOUN'), ('stratification', 'NOUN')]), ('but', [('weight', 'VERB'), ('correct', 'VERB')]), ('but', [('clustering', 'NOUN'), ('stratification', 'NOUN')]), ('nor', [('weight', 'VERB'), ('correct', 'VERB')]), ('nor', [('clustering', 'NOUN'), ('stratification', 'NOUN')])]
+All done! The result is stored in test.csv.

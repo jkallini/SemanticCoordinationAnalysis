@@ -1,0 +1,22 @@
+1st Conjunct Category,1st Conjunct Text,2nd Conjunct Category,2nd Conjunct Text,Conjunction,Sentence Text
+NOUN,discrimination,NOUN,bias,and,Personal experiences of discrimination and bias have been the focus of much social science research. [1 - 3]
+ADJ,conscious,ADJ,unconscious,and,psychologists have examined the mental processes that underpin conscious and unconscious biases [6];
+NOUN,origin,NOUN,consequence,and,"In many respects, researchers already possess a wealth of knowledge concerning the origins and consequences of discrimination and bias. [11]"
+NOUN,discrimination,NOUN,bias,and,"In many respects, researchers already possess a wealth of knowledge concerning the origins and consequences of discrimination and bias. [11]"
+NOUN,discrimination,NOUN,bias,and,"Indeed, the implementation of certain policies is rooted in the assumption that discrimination and biases are, at least to some appreciable amount, present in modern society."
+PROPN,Kessler,NOUN,colleague,and,"At least one prior study by Kessler and colleagues [15], however, using measures of perceived discrimination in a large American sample, reported that approximately 33% of respondents reported some form of discrimination (see also, Gibbons et al. [4])."
+ADV,sometimes,ADV,often,or,"All respondents who indicated they were discriminated against — specifically, those who responded with sometimes or often to the perceived discrimination measure described above — were asked the following question:"
+NOUN,height,NOUN,weight,or,height or weight;
+NOUN,education,NOUN,income,or,education or income;
+NOUN,ancestry,NOUN,origin,or,The following categories from the original questionnaire were collapsed into one category for the analysis: race; ancestry or national origin; and shade of skin color.
+VERB,appear,VERB,interview,but,"The logic is that (nearly) all Wave 4 respondents appeared in the Wave 1 sample, but not all would have been interviewed at Wave 3 due to differential patterns of temporary attrition."
+PROPN,Black,PROPN,American,or,Respondents were asked to indicate their race from among the following categories: White; Black or African American; Hispanic; American Indian or Native American; and Asian or Pacific Islander.
+PROPN,Indian,PROPN,American,or,Respondents were asked to indicate their race from among the following categories: White; Black or African American; Hispanic; American Indian or Native American; and Asian or Pacific Islander.
+PROPN,Asian,PROPN,Islander,or,Respondents were asked to indicate their race from among the following categories: White; Black or African American; Hispanic; American Indian or Native American; and Asian or Pacific Islander.
+VERB,provide,VERB,ask,and,"Respondents were provided the opportunity to select more than one race, and those who did were asked a follow-up question regarding which category best described their racial background."
+SYM,=,SYM,=,and,"Second, sex was dichotomously coded based on the self-reported sex of the respondent at Wave 4 (0 = female and 1 = male)."
+NOUN,variable,NOUN,category,and,"First, summary statistics of the study variables and racial categories were produced."
+PROPN,Rao,PROPN,Scott,and,"More specifically, when analyzing weighted sample data employing the svy suite of commands in Stata the conventional Pearson χ2 statistic test of independence is converted into “an Fstatistic with noninteger degrees of freedom by using a second-order Rao and Scott (1981 [22], 1984 [23]) correction”. [24]"
+NOUN,adjustment,NOUN,calculation,and,The p-value associated with the design-based F is thus more accurate (than the associated with the χ2 statistic) given the adjustments and calculations take into account the weighted nature of the data.
+VERB,weight,VERB,correct,and,"As noted earlier, all analyses were weighted according to the survey weight provided by the Add Health research staff and standard errors were corrected for the clustering and stratification that defined the sampling strategy."
+NOUN,clustering,NOUN,stratification,and,"As noted earlier, all analyses were weighted according to the survey weight provided by the Add Health research staff and standard errors were corrected for the clustering and stratification that defined the sampling strategy."
