@@ -26,9 +26,6 @@ def get_conjuncts_from_ids(ids, tokenlist):
     # Get tokens of words corresponding to these ids
     conjunct_tokens = tokenlist.filter(id=lambda x: x in ids)
 
-    # Make sure the tokens are sorted
-    conjunct_tokens.sort(key=lambda x: x['id'])
-
     # Get (lemma, pos) tuples for these tokens
     conjuncts = []
     for token in conjunct_tokens:
@@ -39,34 +36,38 @@ def get_conjuncts_from_ids(ids, tokenlist):
 
 def get_coordphrases(tokenlist, cc='and'):
     '''
-    Get (lemma, pos) tuples from the list of integer ids representing
-    words within the given tokenlist. Tuples are ordered by conjunct
-    appearance in the the sentence.
+    Get coordination phrases in the given tokenlist that use the given
+    coordinating conjunction cc.
 
-    @param ids (list of ints): list of integer ids
     @param tokenlist (TokenList): dependency parse of a CoNLL-U sentence
-    @return (list of (str, str) tuples): list of lemma, pos) tuples
-                                         representing conjuncts
+    @param cc (str): coordinating conjunction
+    @return (list of (str, list) tuples): list of (conjunction, conjunct list)
+            tuples representing coordination phrases; a conjunct is
+            a (lemma, pos) tuple of strings
     '''
 
+    # Initialize dictionary mapping first conjuncts to a list of conjuncts
+    # that follow it in a coordination phrase
     conjunct_id_sets = defaultdict(set)
 
-    # Find all
+    # Find all tokens with a 'conj' dependency
     for tok in tokenlist.filter(deprel='conj'):
-        print(tok['lemma'])
 
+        # Get first conjunct (i.e., the head of the 'conj' dependency)
+        # if the coordination uses the given conjunction cc
         first_conjunct = [id for (dep, id) in tok['deps'] if dep == 'conj:'+cc]
 
+        # There is either one first conjunct or none
+        assert(len(first_conjunct) <= 1)
         if len(first_conjunct) != 1:
-          continue
-
+            continue
         first_conjunct_id = first_conjunct[0]
 
-        # first_conjunct_id = tok['head']
-
+        # Add both conjuncts to the id set
         conjunct_id_sets[first_conjunct_id].add(first_conjunct_id)
         conjunct_id_sets[first_conjunct_id].add(tok['id'])
 
+    # Return coordphrases as list of (conjunction, conjunct list) tuples
     coordphrases = [(cc, get_conjuncts_from_ids(list(s), tokenlist))
                     for _, s in conjunct_id_sets.items()]
 
@@ -94,15 +95,20 @@ if __name__ == "__main__":
     i = 1
     tot = str(len(args.input_files))
 
-    for file_name in args.input_files:
+    # Iterate over input files
+    for file_name in tqdm(args.input_files):
+
+        # print("(" + str(i) + "/" + tot + ")")
+        # print("Parsing coordinations from {}...".format(file_name))
 
         file = open(file_name, "r", encoding="utf-8")
-
         data = []
-        for tokenlist in tqdm(parse_incr(file)):
+
+        for tokenlist in parse_incr(file):
 
             sent_text = tokenlist.metadata['text']
 
+            # Get coordination phrases for each coordinating conjunction
             and_coordphrases = get_coordphrases(tokenlist, cc='and')
             or_coordphrases = get_coordphrases(tokenlist, cc='or')
             but_coordphrases = get_coordphrases(tokenlist, cc='but')
@@ -110,19 +116,22 @@ if __name__ == "__main__":
             coordphrases = [*and_coordphrases, *or_coordphrases,
                             *but_coordphrases, *nor_coordphrases]
 
-            if len(coordphrases) != 0:
-              print(sent_text)
-              print(coordphrases)
 
+            # Iterate over coordination phrases
             for cc, conjuncts in coordphrases:
+
+                # Only include two-termed coordinations
                 if len(conjuncts) != 2:
                     continue
 
                 row = []
+
+                # Add conjuncts' categories and texts
                 for (text, cat) in conjuncts:
                     row.append(cat)
                     row.append(text)
 
+                # Add conjunction and sentence text
                 row.append(cc)
                 row.append(sent_text)
 
@@ -132,12 +141,10 @@ if __name__ == "__main__":
                    '2nd Conjunct Category', '2nd Conjunct Text',
                    'Conjunction', 'Sentence Text']
 
+        # Create DataFrame and write it to file
         df = pd.DataFrame(data, columns=columns)
-
         dest_name = file_name.split('.')[0]
-
         df.to_csv(dest_name + '.csv', index=False)
-
-        print("All done! The result is stored in {}.csv.".format(dest_name))
+        #print("All done! The result is stored in {}.csv.".format(dest_name))
 
         i += 1

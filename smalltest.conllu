@@ -1,0 +1,10 @@
+# sent_id = GUM_academic_discrimination-2
+# s_type = frag
+# text = chocolate and vanilla and strawberries and cream 
+1	chocolate	chocolate	NOUN	NN	Number=Sing	0	root	0:root	_
+2	and	and	CCONJ	CC	_	3	cc	3:cc	_
+3	vanilla	vanilla	NOUN	NN	Number=Sing	1	conj	1:conj:and	_
+4	and	and	CCONJ	CC	_	5	cc	5:cc	_
+5	strawberries	strawberry	NOUN	NN	Number=Plur	1	conj	1:conj:and	_
+6	and	and	CCONJ	CC	_	7	cc	7:cc	_
+7	cream	cream	NOUN	NN	Number=Sing	5	conj	5:conj:and	_
