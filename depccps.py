@@ -18,7 +18,7 @@ def get_conjuncts_from_ids(ids, tokenlist):
 
     @param ids (list of ints): list of integer ids
     @param tokenlist (TokenList): dependency parse of a CoNLL-U sentence
-    @return (list of (str, str) tuples): list of lemma, pos) tuples
+    @return (list of (str, str) tuples): list of (pos, lemma, text) tuples
                                          representing conjuncts
     '''
 
@@ -28,7 +28,7 @@ def get_conjuncts_from_ids(ids, tokenlist):
     # Get (lemma, pos) tuples for these tokens
     conjuncts = []
     for token in conjunct_tokens:
-        conjuncts.append((token['lemma'], token['upos']))
+        conjuncts.append((token['upos'], token['lemma'], token['form']))
 
     return conjuncts
 
@@ -123,8 +123,9 @@ if __name__ == "__main__":
                 row = []
 
                 # Add conjuncts' categories and texts
-                for (text, cat) in conjuncts:
+                for (cat, lemma, text) in conjuncts:
                     row.append(cat)
+                    row.append(lemma)
                     row.append(text)
 
                 # Add conjunction and sentence text
@@ -133,8 +134,8 @@ if __name__ == "__main__":
 
                 data.append(row)
 
-        columns = ['1st Conjunct Category', '1st Conjunct Text',
-                   '2nd Conjunct Category', '2nd Conjunct Text',
+        columns = ['1st Conjunct Category', '1st Conjunct Lemma', '1st Conjunct Text',
+                   '2nd Conjunct Category', '2nd Conjunct Lemma', '2nd Conjunct Text',
                    'Conjunction', 'Sentence Text']
 
         # Create DataFrame and write it to file

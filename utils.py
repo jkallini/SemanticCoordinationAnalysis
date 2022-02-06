@@ -43,7 +43,6 @@ def pretty_print(input_df, output_file):
         cat1 = str(row['1st Conjunct Category'])
         conj2 = str(row['2nd Conjunct Text'])
         cat2 = str(row['2nd Conjunct Category'])
-        conjunction = str(row['Conjunction'])
 
         label = cat1 + "+" + cat2
 
@@ -57,9 +56,10 @@ def pretty_print(input_df, output_file):
         conj1_labeled = '\\b ' + '[' + cat1 + ' ' + conj1 + ']' + '\\b0 '
         conj2_labeled = '\\b ' + '[' + cat2 + ' ' + conj2 + ']' + '\\b0 '
 
-        ccp = conj1 + ' ' + conjunction + ' ' + conj2
-        ccp_labeled = conj1_labeled + ' ' + conjunction + ' ' + conj2_labeled
-        sent = sent.replace(ccp, ccp_labeled)
+        # This is imperfect since the same word can appear
+        # multiple times in the sentence.
+        sent = sent.replace(conj1, conj1_labeled)
+        sent = sent.replace(conj2, conj2_labeled)
 
         out_file.write(str(index + 1) + '. ' + sent + '\line\n')
 
@@ -144,8 +144,8 @@ def analyze_synonymy(df):
     df = likes_df(df)
 
     df['Synonyms?'] = df.apply(lambda row: wr.synonyms(
-        str(row['1st Conjunct Text']),
-        str(row['2nd Conjunct Text']),
+        str(row['1st Conjunct Lemma']),
+        str(row['2nd Conjunct Lemma']),
         str(row['1st Conjunct Category'])), axis=1)
 
     return df[df['Synonyms?'].notnull()]
@@ -168,8 +168,8 @@ def analyze_antonymy(df):
             ((df['1st Conjunct Category'] == upos.ADV) & (df['2nd Conjunct Category'] == upos.ADV))]
 
     df['Antonyms?'] = df.apply(lambda row: wr.antonyms(
-        str(row['1st Conjunct Text']),
-        str(row['2nd Conjunct Text']),
+        str(row['1st Conjunct Lemma']),
+        str(row['2nd Conjunct Lemma']),
         str(row['1st Conjunct Category'])), axis=1)
 
     return df[df['Antonyms?'].notnull()]
@@ -192,12 +192,12 @@ def analyze_hypernymy(df):
             ((df['1st Conjunct Category'] == upos.VERB) & (df['2nd Conjunct Category'] == upos.VERB))]
 
     df['1st Conjunct Hypernym?'] = df.apply(lambda row: wr.is_hypernym(
-        str(row['1st Conjunct Text']),
-        str(row['2nd Conjunct Text']),
+        str(row['1st Conjunct Lemma']),
+        str(row['2nd Conjunct Lemma']),
         str(row['1st Conjunct Category'])), axis=1)
     df['2nd Conjunct Hypernym?'] = df.apply(lambda row: wr.is_hypernym(
-        str(row['2nd Conjunct Text']),
-        str(row['1st Conjunct Text']),
+        str(row['2nd Conjunct Lemma']),
+        str(row['1st Conjunct Lemma']),
         str(row['1st Conjunct Category'])), axis=1)
 
     df = df[df['1st Conjunct Hypernym?'].notnull()]
@@ -222,8 +222,8 @@ def analyze_cohyponymy(df):
             ((df['1st Conjunct Category'] == upos.VERB) & (df['2nd Conjunct Category'] == upos.VERB))]
 
     df['Co-hyponyms?'] = df.apply(lambda row: wr.co_hyponyms(
-        str(row['2nd Conjunct Text']),
-        str(row['1st Conjunct Text']),
+        str(row['2nd Conjunct Lemma']),
+        str(row['1st Conjunct Lemma']),
         str(row['1st Conjunct Category'])), axis=1)
 
     return df[df['Co-hyponyms?'].notnull()]
@@ -246,12 +246,12 @@ def analyze_entailment(df):
             (df['2nd Conjunct Category'] == upos.VERB)]
 
     df['1st Conjunct Entails 2nd?'] = df.apply(lambda row: wr.entails(
-        str(row['1st Conjunct Text']),
-        str(row['2nd Conjunct Text']),
+        str(row['1st Conjunct Lemma']),
+        str(row['2nd Conjunct Lemma']),
         str(row['1st Conjunct Category'])), axis=1)
     df['2nd Conjunct Entails 1st?'] = df.apply(lambda row: wr.entails(
-        str(row['2nd Conjunct Text']),
-        str(row['1st Conjunct Text']),
+        str(row['2nd Conjunct Lemma']),
+        str(row['1st Conjunct Lemma']),
         str(row['1st Conjunct Category'])), axis=1)
 
     df = df[df['1st Conjunct Entails 2nd?'].notnull()]
