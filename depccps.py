@@ -5,7 +5,6 @@
 
 from conllu import parse_incr
 from collections import defaultdict
-import os
 import pandas as pd
 from tqdm import tqdm
 import argparse
@@ -98,12 +97,10 @@ if __name__ == "__main__":
     # Iterate over input files
     for file_name in tqdm(args.input_files):
 
-        # print("(" + str(i) + "/" + tot + ")")
-        # print("Parsing coordinations from {}...".format(file_name))
-
         file = open(file_name, "r", encoding="utf-8")
         data = []
 
+        # Get tokenlist for each sentence in file
         for tokenlist in parse_incr(file):
 
             sent_text = tokenlist.metadata['text']
@@ -115,7 +112,6 @@ if __name__ == "__main__":
             nor_coordphrases = get_coordphrases(tokenlist, cc='nor')
             coordphrases = [*and_coordphrases, *or_coordphrases,
                             *but_coordphrases, *nor_coordphrases]
-
 
             # Iterate over coordination phrases
             for cc, conjuncts in coordphrases:
@@ -145,6 +141,5 @@ if __name__ == "__main__":
         df = pd.DataFrame(data, columns=columns)
         dest_name = file_name.split('.')[0]
         df.to_csv(dest_name + '.csv', index=False)
-        #print("All done! The result is stored in {}.csv.".format(dest_name))
 
         i += 1

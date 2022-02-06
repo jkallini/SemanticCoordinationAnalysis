@@ -3,33 +3,28 @@
 # Author: Julie Kallini
 
 from nltk.corpus import wordnet as wn
-import pandas as pd
-
-NOUN_CATEGORIES = ['NN', 'NNS', 'NNP', 'NNPS', 'NP', 'NX']
-VERB_CATEGORIES = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'VP']
-ADJ_CATEGORIES = ['JJ', 'JJR', 'JJS', 'ADJP']
-ADV_CATEGORIES = ['RB', 'RBR', 'RBS', 'ADVP']
+from upos import upos
 
 
-def get_wordnet_tag(nltk_tag):
+def get_wordnet_tag(upos_tag):
     """
-    Return the equivalent wordnet POS tag for the given nltk
+    Return the equivalent wordnet POS tag for the given universal
     POS tag.
 
-    @param nltk_tag (str): NLTK tag
+    @param upos_tag (str): universal POS tag
     @return (str): wordnet tag
     """
-    if nltk_tag in ADJ_CATEGORIES:
+    if upos_tag == upos.ADJ:
         return wn.ADJ
-    elif nltk_tag in VERB_CATEGORIES:
+    elif upos_tag == upos.VERB:
         return wn.VERB
-    elif nltk_tag in NOUN_CATEGORIES:
+    elif upos_tag == upos.NOUN:
         return wn.NOUN
-    elif nltk_tag in ADV_CATEGORIES:
+    elif upos_tag == upos.ADV:
         return wn.ADV
     else:
-        # Use noun as a default POS tag in lemmatization
-        return wn.NOUN
+        raise ValueError(
+            "POS tag {} not in closed class categories".format(upos_tag))
 
 
 def get_synsets(word1, word2, tag):

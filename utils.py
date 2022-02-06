@@ -4,19 +4,11 @@
 
 import pandas as pd
 from multipledispatch import dispatch
-import spacy
 import wordnet_relations as wr
+from upos import upos
 
 # Conjunctions under analysis
 CONJUNCTIONS = ['and', 'or', 'but', 'nor']
-
-# Categories under analysis
-NOUN_CATEGORIES = ['NN', 'NNS', 'NNP', 'NNPS', 'NP', 'NX']
-VERB_CATEGORIES = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'VP']
-ADJ_CATEGORIES = ['JJ', 'JJR', 'JJS', 'ADJP']
-ADV_CATEGORIES = ['RB', 'RBR', 'RBS', 'ADVP']
-
-PHRASAL_CATEGORIES = ['NP', 'VP', 'ADJP', 'ADVP']
 
 
 @dispatch(str, str)
@@ -85,17 +77,17 @@ def likes_by_category(df):
     @return (4-tuple of DataFrames): (nouns, verbs, adjps, advps)
     '''
 
-    nouns = df[(df['1st Conjunct Category'].isin(NOUN_CATEGORIES)) & (
-        df['2nd Conjunct Category'].isin(NOUN_CATEGORIES))]
+    nouns = df[(df['1st Conjunct Category'] == upos.NOUN) & (
+        df['2nd Conjunct Category'] == upos.NOUN)]
 
-    verbs = df[(df['1st Conjunct Category'].isin(VERB_CATEGORIES)) & (
-        df['2nd Conjunct Category'].isin(VERB_CATEGORIES))]
+    verbs = df[(df['1st Conjunct Category'] == upos.VERB) & (
+        df['2nd Conjunct Category'] == upos.VERB)]
 
-    adjps = df[(df['1st Conjunct Category'].isin(ADJ_CATEGORIES)) & (
-        df['2nd Conjunct Category'].isin(ADJ_CATEGORIES))]
+    adjps = df[(df['1st Conjunct Category'] == upos.ADJ) & (
+        df['2nd Conjunct Category'] == upos.ADJ)]
 
-    advps = df[(df['1st Conjunct Category'].isin(ADV_CATEGORIES)) & (
-        df['2nd Conjunct Category'].isin(ADV_CATEGORIES))]
+    advps = df[(df['1st Conjunct Category'] == upos.ADV) & (
+        df['2nd Conjunct Category'] == upos.ADV)]
 
     return (nouns, verbs, adjps, advps)
 
@@ -125,69 +117,16 @@ def unlikes_df(df):
     @param df (DataFrame): coordination phrases
     @return (DataFrame): unlike coordination phrases
     '''
-    
-    df = df[df['1st Conjunct Category'].isin(PHRASAL_CATEGORIES)]
-    df = df[df['2nd Conjunct Category'].isin(PHRASAL_CATEGORIES)]
+    all_categories = [upos.NOUN, upos.VERB, upos.ADJ, upos.ADV]
+
+    df = df[df['1st Conjunct Category'].isin(all_categories)]
+    df = df[df['2nd Conjunct Category'].isin(all_categories)]
 
     # Get unlike category combinations
     unlikes = df.loc[df['1st Conjunct Category']
                      != df['2nd Conjunct Category']]
 
     return unlikes
-
-
-def filter_conj_length(df, length):
-    '''
-    Returns a DataFrame of coordinations contained in the given
-    DataFrame where each conjunct is at most the given length.
-
-    @param df (DataFrame): coordination phrases
-    @param length (int): length threshold for filtering coordinations
-    @return (DataFrame): filtered coordination phrases
-    '''
-    
-    df = df.copy()
-
-    df['Sentence Text'] = df['Sentence Text'].astype('str')
-    mask1 = df['1st Conjunct Text'].str.split().str.len()
-    mask2 = df['2nd Conjunct Text'].str.split().str.len()
-    return df.loc[(mask1 <= length) & (mask2 <= length)]
-
-
-def get_head(phrase, nlp):
-    '''
-    Returns the syntactic head of the phrase using spaCy's dependency
-    parser, if it exists. Returns None otherwise.
-
-    @param phrase (str): phrase to parse
-    @param nlp (Doc): spaCy language model
-    @return (str): head word of phrase
-    '''
-
-    doc = nlp(phrase)
-    sents = list(doc.sents)
-    if sents != []:
-        return str(list(doc.sents)[0].root)
-
-
-def add_conj_heads(df):
-    '''
-    Adds two new columns to the given DataFrame containing the syntactic
-    heads of each conjunct.
-
-    @param df (DataFrame): coordination phrases
-    @return (DataFrame): coordination phrases containing conjunct heads
-    '''
-
-    df = df.copy()
-
-    nlp = spacy.load("en_core_web_lg")
-    df['1st Conjunct Head'] = df.apply(
-        lambda row: get_head(str(row['1st Conjunct Text']), nlp), axis=1)
-    df['2nd Conjunct Head'] = df.apply(
-        lambda row: get_head(str(row['2nd Conjunct Text']), nlp), axis=1)
-    
-    return df
 
 
 def analyze_synonymy(df):
@@ -205,8 +144,8 @@ def analyze_synonymy(df):
     df = likes_df(df)
 
     df['Synonyms?'] = df.apply(lambda row: wr.synonyms(
-        str(row['1st Conjunct Head']),
-        str(row['2nd Conjunct Head']),
+        str(row['1st Conjunct Text']),
+        str(row['2nd Conjunct Text']),
         str(row['1st Conjunct Category'])), axis=1)
 
     return df[df['Synonyms?'].notnull()]
@@ -225,12 +164,12 @@ def analyze_antonymy(df):
     df = df.copy()
 
     # Ensure DataFrame only contains adjective/adverb categories
-    df = df[(df['1st Conjunct Category'].isin(ADJ_CATEGORIES) & df['2nd Conjunct Category'].isin(ADJ_CATEGORIES)) |
-            (df['1st Conjunct Category'].isin(ADV_CATEGORIES) & df['2nd Conjunct Category'].isin(ADV_CATEGORIES))]
+    df = df[((df['1st Conjunct Category'] == upos.ADJ) & (df['2nd Conjunct Category'] == upos.ADJ)) |
+            ((df['1st Conjunct Category'] == upos.ADV) & (df['2nd Conjunct Category'] == upos.ADV))]
 
     df['Antonyms?'] = df.apply(lambda row: wr.antonyms(
-        str(row['1st Conjunct Head']),
-        str(row['2nd Conjunct Head']),
+        str(row['1st Conjunct Text']),
+        str(row['2nd Conjunct Text']),
         str(row['1st Conjunct Category'])), axis=1)
 
     return df[df['Antonyms?'].notnull()]
@@ -249,16 +188,16 @@ def analyze_hypernymy(df):
     df = df.copy()
 
     # Ensure DataFrame only contains nominal/verbal categories
-    df = df[(df['1st Conjunct Category'].isin(NOUN_CATEGORIES) & df['2nd Conjunct Category'].isin(NOUN_CATEGORIES)) |
-            (df['1st Conjunct Category'].isin(VERB_CATEGORIES) & df['2nd Conjunct Category'].isin(VERB_CATEGORIES))]
+    df = df[((df['1st Conjunct Category'] == upos.NOUN) & (df['2nd Conjunct Category'] == upos.NOUN)) |
+            ((df['1st Conjunct Category'] == upos.VERB) & (df['2nd Conjunct Category'] == upos.VERB))]
 
     df['1st Conjunct Hypernym?'] = df.apply(lambda row: wr.is_hypernym(
-        str(row['1st Conjunct Head']),
-        str(row['2nd Conjunct Head']),
+        str(row['1st Conjunct Text']),
+        str(row['2nd Conjunct Text']),
         str(row['1st Conjunct Category'])), axis=1)
     df['2nd Conjunct Hypernym?'] = df.apply(lambda row: wr.is_hypernym(
-        str(row['2nd Conjunct Head']),
-        str(row['1st Conjunct Head']),
+        str(row['2nd Conjunct Text']),
+        str(row['1st Conjunct Text']),
         str(row['1st Conjunct Category'])), axis=1)
 
     df = df[df['1st Conjunct Hypernym?'].notnull()]
@@ -279,12 +218,12 @@ def analyze_cohyponymy(df):
     df = df.copy()
 
     # Ensure DataFrame only contains nominal/verbal categories
-    df = df[(df['1st Conjunct Category'].isin(NOUN_CATEGORIES) & df['2nd Conjunct Category'].isin(NOUN_CATEGORIES)) |
-            (df['1st Conjunct Category'].isin(VERB_CATEGORIES) & df['2nd Conjunct Category'].isin(VERB_CATEGORIES))]
+    df = df[((df['1st Conjunct Category'] == upos.NOUN) & (df['2nd Conjunct Category'] == upos.NOUN)) |
+            ((df['1st Conjunct Category'] == upos.VERB) & (df['2nd Conjunct Category'] == upos.VERB))]
 
     df['Co-hyponyms?'] = df.apply(lambda row: wr.co_hyponyms(
-        str(row['2nd Conjunct Head']),
-        str(row['1st Conjunct Head']),
+        str(row['2nd Conjunct Text']),
+        str(row['1st Conjunct Text']),
         str(row['1st Conjunct Category'])), axis=1)
 
     return df[df['Co-hyponyms?'].notnull()]
@@ -303,16 +242,16 @@ def analyze_entailment(df):
     df = df.copy()
 
     # Ensure conjuncts have verbal categories
-    df = df[df['1st Conjunct Category'].isin(VERB_CATEGORIES)]
-    df = df[df['2nd Conjunct Category'].isin(VERB_CATEGORIES)]
+    df = df[(df['1st Conjunct Category'] == upos.VERB) &
+            (df['2nd Conjunct Category'] == upos.VERB)]
 
     df['1st Conjunct Entails 2nd?'] = df.apply(lambda row: wr.entails(
-        str(row['1st Conjunct Head']),
-        str(row['2nd Conjunct Head']),
+        str(row['1st Conjunct Text']),
+        str(row['2nd Conjunct Text']),
         str(row['1st Conjunct Category'])), axis=1)
     df['2nd Conjunct Entails 1st?'] = df.apply(lambda row: wr.entails(
-        str(row['2nd Conjunct Head']),
-        str(row['1st Conjunct Head']),
+        str(row['2nd Conjunct Text']),
+        str(row['1st Conjunct Text']),
         str(row['1st Conjunct Category'])), axis=1)
 
     df = df[df['1st Conjunct Entails 2nd?'].notnull()]
