@@ -40,6 +40,18 @@ def get_synsets(word1, word2, tag):
     return wn.synsets(word1, pos=pos), wn.synsets(word2, pos=pos)
 
 
+def in_wordnet(word, tag):
+    """
+    Returns whether the word with the given tag is present in WordNet.
+
+    @param word (str): English word
+    @param tag (str): UPOS tag of word
+    @return (bool): is the word in WordNet
+    """
+    pos = get_wordnet_tag(tag)
+    return len(wn.synsets(word, pos=pos)) != 0
+
+
 def synonyms(word1, word2, tag):
     """
     Returns whether word1 and word2 are synonyms by testing all possible

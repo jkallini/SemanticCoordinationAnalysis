@@ -129,6 +129,17 @@ def unlikes_df(df):
     return unlikes
 
 
+def in_wordnet(word, tag):
+    """
+    Returns whether the word with the given tag is present in WordNet.
+
+    @param word (str): English word
+    @param tag (str): UPOS tag of word
+    @return (bool): is the word in WordNet
+    """
+    return wr.in_wordnet(word, tag)
+
+
 def analyze_synonymy(df):
     """
     Run synonymy analysis on all categories in the given DataFrame.
