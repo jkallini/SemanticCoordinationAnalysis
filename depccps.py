@@ -8,6 +8,7 @@ from collections import defaultdict
 import pandas as pd
 from tqdm import tqdm
 import argparse
+from upos import upos
 
 
 def get_conjuncts_from_ids(ids, tokenlist):
@@ -138,8 +139,20 @@ if __name__ == "__main__":
                    '2nd Conjunct Category', '2nd Conjunct Lemma', '2nd Conjunct Text',
                    'Conjunction', 'Sentence Text']
 
-        # Create DataFrame and write it to file
+        # Create DataFrame
         df = pd.DataFrame(data, columns=columns)
+
+        # Ensure that only closed class categories are included
+        valid_categories = [upos.NOUN, upos.VERB, upos.ADJ, upos.ADV]
+        df = df[df['1st Conjunct Category'].isin(valid_categories)]
+        df = df[df['2nd Conjunct Category'].isin(valid_categories)]
+
+        # Remove words with generic lemmas
+        bad_lemmas = ['be', 'do']
+        df = df[~df['1st Conjunct Lemma'].isin(bad_lemmas)]
+        df = df[~df['2nd Conjunct Lemma'].isin(bad_lemmas)]
+
+        # Write DataFrame to file
         dest_name = file_name.split('.')[0]
         df.to_csv(dest_name + '.csv', index=False)
 

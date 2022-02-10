@@ -7,8 +7,8 @@ rtf/
 # charts
 charts/
 
-# Jessica Ficler's PTB coordination extension
-PTB.ext
+# Word2Vec
+GoogleNews-vectors-negative300.bin
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,macos
