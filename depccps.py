@@ -13,8 +13,9 @@ from upos import upos
 
 def get_conjuncts_from_ids(ids, tokenlist):
     '''
-    Get (lemma, pos) tuples from the list of integer ids representing
-    words within the given tokenlist. Tuples are ordered by conjunct
+    Get (pos, lemma, text) tuples from the list of integer ids representing
+    words within the given tokenlist. If the conjunct represents gapped
+    material, "GAP" is used as the lemma. Tuples are ordered by conjunct
     appearance in the the sentence.
 
     @param ids (list of ints): list of integer ids
@@ -29,9 +30,45 @@ def get_conjuncts_from_ids(ids, tokenlist):
     # Get (lemma, pos) tuples for these tokens
     conjuncts = []
     for token in conjunct_tokens:
-        conjuncts.append((token['upos'], token['lemma'], token['form']))
+        upos = token['upos']
+        lemma = token['lemma'] if token['deprel'] != "_" else "GAP"
+        form = token['form']
+        conjuncts.append((upos, lemma, form))
 
     return conjuncts
+
+
+def is_promoted_conjunct(id, tokenlist):
+    '''
+    Checks if the token with the given id has been labeled as a conjunct
+    because it has been promoted due to gapping.
+
+    @param id (int): integer id
+    @param tokenlist (TokenList): dependency parse of a CoNLL-U sentence
+    @return (bool): True if id is a promoted conjunct, False otherwise
+    '''
+    for tok in tokenlist:
+        # 'orphan' relation is used in cases of head ellipsis
+        if tok['deprel'] == 'orphan' and tok['head'] == id:
+            return True
+    return False
+
+
+def get_conj_dep(deps, cc):
+    '''
+    If the given list of enhanced dependencies contains a dependency
+    relation of the form 'conj:cc', return the id that is linked to
+    that dependencies. Return None otherwise. (There will always
+    be at most one such dependency.)
+
+    @param deps (list of (str, int) tuples): list of (dep, id) dependencies
+    @param cc (str): coordinating conjunction
+    @return (nullable int): id linked to 'conj:cc' relation, None if no
+            such relation exists
+    '''
+    for dep, id in deps:
+        if 'conj:'+cc == dep:
+            return id
 
 
 def get_coordphrases(tokenlist, cc='and'):
@@ -50,22 +87,19 @@ def get_coordphrases(tokenlist, cc='and'):
     # that follow it in a coordination phrase
     conjunct_id_sets = defaultdict(set)
 
-    # Find all tokens with a 'conj' dependency
-    for tok in tokenlist.filter(deprel='conj'):
+    for tok in tokenlist:
 
-        # Get first conjunct (i.e., the head of the 'conj' dependency)
-        # if the coordination uses the given conjunction cc
-        first_conjunct = [id for (dep, id) in tok['deps'] if dep == 'conj:'+cc]
+        # Check if token has enhanced deps and is not a promoted conjunct
+        if tok['deps'] is not None and not is_promoted_conjunct(tok['id'], tokenlist):
 
-        # There is either one first conjunct or none
-        assert(len(first_conjunct) <= 1)
-        if len(first_conjunct) != 1:
-            continue
-        first_conjunct_id = first_conjunct[0]
+            # Get first conjunct (i.e., the head of the 'conj' dependency)
+            # if the coordination uses the given conjunction cc
+            first_conjunct = get_conj_dep(tok['deps'], cc)
 
-        # Add both conjuncts to the id set
-        conjunct_id_sets[first_conjunct_id].add(first_conjunct_id)
-        conjunct_id_sets[first_conjunct_id].add(tok['id'])
+            # Add both conjuncts to the id set
+            if first_conjunct is not None:
+                conjunct_id_sets[first_conjunct].add(first_conjunct)
+                conjunct_id_sets[first_conjunct].add(tok['id'])
 
     # Return coordphrases as list of (conjunction, conjunct list) tuples
     coordphrases = [(cc, get_conjuncts_from_ids(list(s), tokenlist))
@@ -154,6 +188,7 @@ if __name__ == "__main__":
 
         # Write DataFrame to file
         dest_name = file_name.split('.')[0]
+        df.drop_duplicates(inplace=True)
         df.to_csv(dest_name + '.csv', index=False)
 
         i += 1

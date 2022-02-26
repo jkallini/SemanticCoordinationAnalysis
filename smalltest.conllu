@@ -8,3 +8,53 @@
 5	strawberries	strawberry	NOUN	NN	Number=Plur	1	conj	1:conj:and	_
 6	and	and	CCONJ	CC	_	7	cc	7:cc	_
 7	cream	cream	NOUN	NN	Number=Sing	5	conj	5:conj:and	_
+
+# sent_id = weblog-blogspot.com_alaindewitt_20060924104100_ENG_20060924_104100-0130
+# text = She is called "martyr" by several Arab leaders and "activist" by the European press.
+1	She	she	PRON	PRP	Case=Nom|Gender=Fem|Number=Sing|Person=3|PronType=Prs	3	nsubj:pass	3:nsubj:pass|5:nsubj:xsubj|11.1:nsubj:pass|13:nsubj:pass	_
+2	is	be	AUX	VBZ	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin	3	aux:pass	3:aux:pass	_
+3	called	call	VERB	VBN	Tense=Past|VerbForm=Part|Voice=Pass	0	root	0:root	_
+4	"	"	PUNCT	``	_	5	punct	5:punct	SpaceAfter=No
+5	martyr	martyr	NOUN	NN	Number=Sing	3	xcomp	3:xcomp	SpaceAfter=No
+6	"	"	PUNCT	''	_	5	punct	5:punct	_
+7	by	by	ADP	IN	_	10	case	10:case	_
+8	several	several	ADJ	JJ	Degree=Pos	10	amod	10:amod	_
+9	Arab	Arab	ADJ	JJ	Degree=Pos	10	amod	10:amod	_
+10	leaders	leader	NOUN	NNS	Number=Plur	3	obl	3:obl:by	_
+11	and	and	CCONJ	CC	_	13	cc	13:cc	_
+11.1	called	call	VERB	VBN	Tense=Past|VerbForm=Part|Voice=Pass	_	_	3:conj:and	CopyOf=3
+12	"	"	PUNCT	``	_	13	punct	13:punct	SpaceAfter=No
+13	activist	activist	NOUN	NN	Number=Sing	3	conj	3:conj:and|11.1:xcomp	SpaceAfter=No
+14	"	"	PUNCT	''	_	13	punct	13:punct	_
+15	by	by	ADP	IN	_	18	case	18:case	_
+16	the	the	DET	DT	Definite=Def|PronType=Art	18	det	18:det	_
+17	European	European	ADJ	JJ	Degree=Pos	18	amod	18:amod	_
+18	press	press	NOUN	NN	Number=Sing	13	orphan	11.1:obl:by	SpaceAfter=No
+19	.	.	PUNCT	.	_	3	punct	3:punct	_
+
+
+# sent_id = reviews-292841-0005
+# text = There's a restaurant nearby (walking distance) with a great breakfast, and a market across the street.
+1-2	There's	_	_	_	_	_	_	_	_
+1	There	there	PRON	EX	_	2	expl	2:expl	_
+2	's	be	VERB	VBZ	Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin	0	root	0:root	_
+3	a	a	DET	DT	Definite=Ind|PronType=Art	4	det	4:det	_
+4	restaurant	restaurant	NOUN	NN	Number=Sing	2	nsubj	2:nsubj	_
+5	nearby	nearby	ADV	RB	_	4	advmod	4:advmod	_
+6	(	(	PUNCT	-LRB-	_	8	punct	8:punct	SpaceAfter=No
+7	walking	walking	NOUN	NN	Number=Sing	8	compound	8:compound	_
+8	distance	distance	NOUN	NN	Number=Sing	4	nmod:npmod	4:nmod:npmod	SpaceAfter=No
+9	)	)	PUNCT	-RRB-	_	8	punct	8:punct	_
+10	with	with	ADP	IN	_	13	case	13:case	_
+11	a	a	DET	DT	Definite=Ind|PronType=Art	13	det	13:det	_
+12	great	great	ADJ	JJ	Degree=Pos	13	amod	13:amod	_
+13	breakfast	breakfast	NOUN	NN	Number=Sing	4	nmod	4:nmod:with	SpaceAfter=No
+14	,	,	PUNCT	,	_	17	punct	17:punct	_
+15	and	and	CCONJ	CC	_	17	cc	17:cc	_
+15.1	's	be	VERB	VBZ	_	_	_	2:conj:and	CopyOf=2
+16	a	a	DET	DT	Definite=Ind|PronType=Art	17	det	17:det	_
+17	market	market	NOUN	NN	Number=Sing	4	conj	2:nsubj|4:conj:and|15.1:nsubj	_
+18	across	across	ADP	IN	_	20	case	20:case	_
+19	the	the	DET	DT	Definite=Def|PronType=Art	20	det	20:det	_
+20	street	street	NOUN	NN	Number=Sing	17	orphan	15.1:obl:across	SpaceAfter=No
+21	.	.	PUNCT	.	_	2	punct	2:punct	_
