@@ -58,7 +58,7 @@ def get_conj_dep(deps, cc):
     '''
     If the given list of enhanced dependencies contains a dependency
     relation of the form 'conj:cc', return the id that is linked to
-    that dependencies. Return None otherwise. (There will always
+    that dependency. Return None otherwise. (There will always
     be at most one such dependency.)
 
     @param deps (list of (str, int) tuples): list of (dep, id) dependencies
@@ -66,9 +66,14 @@ def get_conj_dep(deps, cc):
     @return (nullable int): id linked to 'conj:cc' relation, None if no
             such relation exists
     '''
+    ids = []
     for dep, id in deps:
         if 'conj:'+cc == dep:
-            return id
+            ids.append(id)
+    
+    # There should only be one relation of the form 'conj:cc'
+    assert(len(ids) <= 1)
+    return ids[0] if len(ids) > 0 else None
 
 
 def get_coordphrases(tokenlist, cc='and'):
