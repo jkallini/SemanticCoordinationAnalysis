@@ -3,33 +3,28 @@
 # Author: Julie Kallini
 
 from nltk.corpus import wordnet as wn
-import pandas as pd
-
-NOUN_CATEGORIES = ['NN', 'NNS', 'NNP', 'NNPS', 'NP', 'NX']
-VERB_CATEGORIES = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'VP']
-ADJ_CATEGORIES = ['JJ', 'JJR', 'JJS', 'ADJP']
-ADV_CATEGORIES = ['RB', 'RBR', 'RBS', 'ADVP']
+from upos import upos
 
 
-def get_wordnet_tag(nltk_tag):
+def get_wordnet_tag(upos_tag):
     """
-    Return the equivalent wordnet POS tag for the given nltk
+    Return the equivalent wordnet POS tag for the given universal
     POS tag.
 
-    @param nltk_tag (str): NLTK tag
+    @param upos_tag (str): universal POS tag
     @return (str): wordnet tag
     """
-    if nltk_tag in ADJ_CATEGORIES:
+    if upos_tag == upos.ADJ:
         return wn.ADJ
-    elif nltk_tag in VERB_CATEGORIES:
+    elif upos_tag == upos.VERB:
         return wn.VERB
-    elif nltk_tag in NOUN_CATEGORIES:
+    elif upos_tag == upos.NOUN:
         return wn.NOUN
-    elif nltk_tag in ADV_CATEGORIES:
+    elif upos_tag == upos.ADV:
         return wn.ADV
     else:
-        # Use noun as a default POS tag in lemmatization
-        return wn.NOUN
+        raise ValueError(
+            "POS tag {} not in closed class categories".format(upos_tag))
 
 
 def get_synsets(word1, word2, tag):
@@ -43,6 +38,18 @@ def get_synsets(word1, word2, tag):
     """
     pos = get_wordnet_tag(tag)
     return wn.synsets(word1, pos=pos), wn.synsets(word2, pos=pos)
+
+
+def in_wordnet(word, tag):
+    """
+    Returns whether the word with the given tag is present in WordNet.
+
+    @param word (str): English word
+    @param tag (str): UPOS tag of word
+    @return (bool): is the word in WordNet
+    """
+    pos = get_wordnet_tag(tag)
+    return len(wn.synsets(word, pos=pos)) != 0
 
 
 def synonyms(word1, word2, tag):
@@ -79,6 +86,9 @@ def antonyms(word1, word2, tag):
         - True if word1 and word2 are antonyms, False otherwise
         - None if word1 or word2 is not in WordNet
     """
+    if word1.lower() == word2.lower():
+        return False
+
     syns1, syns2 = get_synsets(word1, word2, tag)
     if len(syns1) == 0 or len(syns2) == 0:
         return None
@@ -133,6 +143,8 @@ def is_hypernym(word1, word2, tag):
         - True if word1 is a hypernym of word2, False otherwise
         - None if word1 or word2 is not in WordNet
     """
+    if word1.lower() == word2.lower():
+        return False
     return relates(word1, word2, lambda s: s.hypernyms(), tag)
 
 
@@ -191,4 +203,6 @@ def entails(word1, word2, tag):
         - True if word1 entails word2, False otherwise
         - None if word1 or word2 is not in WordNet
     """
+    if word1.lower() == word2.lower():
+        return False
     return relates(word2, word1, lambda s: s.entailments(), tag)
